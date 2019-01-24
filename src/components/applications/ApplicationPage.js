@@ -3,26 +3,16 @@ import './Applications.css';
 import api from '../../api/api';
 import ApplicationTable from "./ApplicationTable";
 import {Header, Loader} from "semantic-ui-react";
+import {Route} from "react-router-dom";
+import ApplicationInfo from "./application-info/ApplicationInfo";
 
 class ApplicationPage extends Component {
-  state = {
-    applications: [],
-    loaded: false,
-  };
-
-  componentDidMount() {
-    api.getApps().then(apps => {
-      this.setState({applications: apps, loaded: true});
-    })
-  }
-
   render() {
     return (
       <React.Fragment>
-        <Header as='h1'>Applications</Header>
-        {!this.state.loaded && <Loader active size='massive'>Loading</Loader>}
-        {this.state.loaded &&
-        <ApplicationTable apps={this.state.applications}/>}
+        <Header as='h2' className='page-header'>Applications</Header>
+        <Route exact path="/applications" component={ApplicationTable}/>
+        <Route path="/applications/:name" component={ApplicationInfo}/>
       </React.Fragment>
     );
   }

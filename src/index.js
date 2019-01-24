@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import ApplicationPage from './components/applications/ApplicationPage';
 import 'semantic-ui-css/semantic.min.css';
 import * as serviceWorker from './serviceWorker';
+import Home from "./components/home/home";
 
-ReactDOM.render(<ApplicationPage />, document.getElementById('root'));
+ReactDOM.render(<Home />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
