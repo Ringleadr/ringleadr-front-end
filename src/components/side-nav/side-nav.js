@@ -7,9 +7,9 @@ class SideNav extends Component {
     let temp = window.location.pathname.substring(1);
     let activeItem = temp.substring(0, temp.indexOf("/") > 0 ? temp.indexOf("/") : temp.length);
     return (
-    <Menu vertical>
+    <Menu vertical inverted>
       <Menu.Item>
-        <Header as='h1'>Agogos</Header>
+        <Header as='h1' inverted>Agogos</Header>
       </Menu.Item>
       <Menu.Item name='overview' active={activeItem === ''}>
         <Link to="/">Overview</Link>
@@ -19,8 +19,12 @@ class SideNav extends Component {
         <Link to="/applications">Applications</Link>
       </Menu.Item>
 
-      <Menu.Item name='Networks' active={activeItem === 'networks'}>
+      <Menu.Item name='networks' active={activeItem === 'networks'}>
         <Link to="/networks">Networks</Link>
+      </Menu.Item>
+
+      <Menu.Item name='storage' active={activeItem === 'storage'}>
+        <Link to="/storage">Storage</Link>
       </Menu.Item>
 
       <Menu.Item name='nodes' active={activeItem === 'nodes'}>

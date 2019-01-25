@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Icon, Loader, Table} from 'semantic-ui-react';
+import {Button, Icon, Loader, Table} from 'semantic-ui-react';
 import './Applications.css';
 import api from "../../api/api";
 import {Link} from "react-router-dom";
@@ -54,6 +54,7 @@ class ApplicationTable extends Component {
             })}
           </Table.Body>
         </Table>}
+        <Button centered positive>Add new Application</Button>
       </React.Fragment>
     );
   }

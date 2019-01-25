@@ -7,6 +7,15 @@ const API = {
   async getApp(name) {
     const response = await fetch(`http://localhost:14440/application/${name}`);
     return await response.json();
+  },
+
+  async getNetworks() {
+    const response = await fetch(`http://localhost:14440/networks`);
+    return await response.json();
+  },
+
+  async getCompInfo(name) {
+    return {name: "Test Component"};
   }
 };
 

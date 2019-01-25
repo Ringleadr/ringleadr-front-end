@@ -3,6 +3,7 @@ import {Grid, Header, Menu} from "semantic-ui-react";
 import ApplicationPage from "../applications/ApplicationPage";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import SideNav from "../side-nav/side-nav";
+import NetworkPage from "../networks/NetworkPage";
 
 class Home extends Component {
   constructor(props) {
@@ -22,7 +23,8 @@ class Home extends Component {
         <SideNav/>
         </Grid.Column>
         <Grid.Column width={12}>
-        <Route path="/applications" component={ApplicationPage}/>
+          <Route path="/applications" component={ApplicationPage}/>
+          <Route path="/networks" component={NetworkPage}/>
         </Grid.Column>
       </Grid>
       </Router>

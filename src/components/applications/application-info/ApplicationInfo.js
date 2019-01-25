@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import api from '../../../api/api';
-import {Loader} from "semantic-ui-react";
+import {Breadcrumb, Loader} from "semantic-ui-react";
 import InfoDisplay from "./InfoDisplay";
+import {Link} from "react-router-dom";
 
 class ApplicationInfo extends Component {
   state = {
@@ -22,6 +23,11 @@ class ApplicationInfo extends Component {
   render() {
     return (
       <React.Fragment>
+        <Breadcrumb>
+          <Breadcrumb.Section link><Link to='/applications'>Applications</Link></Breadcrumb.Section>
+          <Breadcrumb.Divider />
+          <Breadcrumb.Section active>{this.props.match.params.name}</Breadcrumb.Section>
+        </Breadcrumb>
         {!this.state.loaded && <Loader active inline size='huge'>Loading {this.props.match.params.name}</Loader>}
         {this.state.loaded &&
         <InfoDisplay app={this.state.application}/>}

@@ -5,6 +5,7 @@ import ApplicationTable from "./ApplicationTable";
 import {Header, Loader} from "semantic-ui-react";
 import {Route} from "react-router-dom";
 import ApplicationInfo from "./application-info/ApplicationInfo";
+import ComponentInfo from "./component-info/ComponentInfo";
 
 class ApplicationPage extends Component {
   render() {
@@ -12,7 +13,8 @@ class ApplicationPage extends Component {
       <React.Fragment>
         <Header as='h2' className='page-header'>Applications</Header>
         <Route exact path="/applications" component={ApplicationTable}/>
-        <Route path="/applications/:name" component={ApplicationInfo}/>
+        <Route exact path="/applications/:name" component={ApplicationInfo}/>
+        <Route exact path="/applications/:name/:compName" component={ComponentInfo}/>
       </React.Fragment>
     );
   }
