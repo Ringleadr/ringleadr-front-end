@@ -14,8 +14,9 @@ const API = {
     return await response.json();
   },
 
-  async getCompInfo(name) {
-    return {name: "Test Component"};
+  async getCompInfo(appName, compName) {
+    const response = await fetch(`http://localhost:14440/application/${appName}/${compName}`);
+    return await response.json();
   }
 };
 

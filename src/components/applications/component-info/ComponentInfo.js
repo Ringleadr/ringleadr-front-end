@@ -11,7 +11,7 @@ class ComponentInfo extends Component {
   };
 
   componentDidMount() {
-    api.getCompInfo(this.props.match.params.compName).then(comp => {
+    api.getCompInfo(this.props.match.params.name, this.props.match.params.compName).then(comp => {
       if (comp) {
         this.setState({comp: comp, loaded: true});
       } else {

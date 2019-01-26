@@ -7,7 +7,7 @@ class ApplicationNetworks extends Component {
   render() {
     return (
       <React.Fragment>
-        <Table basic='very celled collapsing'>
+        <Table basic='very' celled collapsing>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>
