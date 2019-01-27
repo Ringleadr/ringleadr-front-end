@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import {Crosshair, HorizontalGridLines, LineSeries, VerticalGridLines, XAxis, XYPlot, YAxis} from "react-vis";
+import {
+  Crosshair,
+  DiscreteColorLegend,
+  Highlight,
+  HorizontalGridLines,
+  LineSeries,
+  VerticalGridLines,
+  XAxis,
+  XYPlot,
+  YAxis
+} from "react-vis";
+import {Button} from "semantic-ui-react";
 
 
 class ComponentGraph extends Component {
@@ -44,9 +55,21 @@ class ComponentGraph extends Component {
 
 
   render() {
+    const {filter} = this.state;
     return (
       <React.Fragment>
-        <XYPlot xType="time" height={300} width={1000} onMouseLeave={this._onMouseLeave}>
+        <XYPlot
+          animation
+          xType="time"
+          height={300}
+          width={1000}
+          onMouseLeave={this._onMouseLeave}
+          xDomain={
+            filter && [
+              filter.left,
+              filter.right
+            ]
+          }>
           <HorizontalGridLines />
           <VerticalGridLines />
           <XAxis title="Time" />
@@ -55,15 +78,39 @@ class ComponentGraph extends Component {
             data={this.averageData}
             onNearestX={this._onNearestX}
           />
-          <LineSeries />
           <LineSeries
             data={this.totalData}
           />
           <Crosshair
             values={this.state.crosshairValues}
             className={'test-class-name'}
+            titleFormat={(e) => {
+              let time = e[0].x;
+              return {
+                title: "Usage at",
+                value: `${time.getDate()}/${time.getMonth()+1}/${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
+              }
+            }}
+            itemsFormat={(e) => {
+              return [
+                {
+                  title: "Average",
+                  value: `${e[0].y.toFixed(3)}%`,
+                },
+                {
+                  title: "Total",
+                  value: `${e[1].y.toFixed(3)}%`,
+                }
+              ]
+            }}
           />
+
+          <Highlight
+            enableY={false}
+            onBrushEnd={area => this.setState({filter: area})}/>
         </XYPlot>
+        <DiscreteColorLegend height={100} width={300} items={["Average", "Total"]} orientation={"horizontal"}/>
+        <Button onClick={() => this.setState({filter: null})}>Reset Zoom</Button>
       </React.Fragment>
     );
   }

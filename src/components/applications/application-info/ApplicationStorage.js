@@ -8,7 +8,7 @@ class ApplicationStorage extends Component {
     let storeResults = [];
     return (
       <React.Fragment>
-        <Table basic='very' celled collapsing>
+        <Table basic='very' celled collapsing className={'info-table'}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>

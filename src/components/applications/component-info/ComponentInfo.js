@@ -24,10 +24,10 @@ class ComponentInfo extends Component {
     return (
       <React.Fragment>
         <Breadcrumb>
-          <Breadcrumb.Section link><Link to='/applications'>Applications</Link></Breadcrumb.Section>
-          <Breadcrumb.Divider />
-          <Breadcrumb.Section link><Link to={`/applications/${this.props.match.params.name}`}>{this.props.match.params.name}</Link></Breadcrumb.Section>
-          <Breadcrumb.Divider />
+          <Breadcrumb.Section><Link to='/applications'>Applications</Link></Breadcrumb.Section>
+          <Breadcrumb.Divider/>
+          <Breadcrumb.Section><Link to={`/applications/${this.props.match.params.name}`}>{this.props.match.params.name}</Link></Breadcrumb.Section>
+          <Breadcrumb.Divider/>
           <Breadcrumb.Section active>{this.props.match.params.compName}</Breadcrumb.Section>
         </Breadcrumb>
         {!this.state.loaded && <Loader active inline size='huge'>Loading {this.props.match.params.compName}</Loader>}

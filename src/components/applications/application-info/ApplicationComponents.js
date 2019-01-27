@@ -7,7 +7,7 @@ class ApplicationComponents extends Component {
   render() {
     return (
       <React.Fragment>
-        <Table basic='very' celled collapsing>
+        <Table basic='very' celled collapsing className={'info-table'}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>

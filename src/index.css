@@ -16,7 +16,10 @@ code {
 }
 
 .page-header {
-  margin-top: 60px !important;
+  margin-top: 30px !important;
   text-align: center;
 }
 
+.ui.left.sidebar {
+  width: inherit !important;
+}
