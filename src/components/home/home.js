@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
-import {Grid, Header, Menu} from "semantic-ui-react";
+import {Grid} from "semantic-ui-react";
 import ApplicationPage from "../applications/ApplicationPage";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route} from "react-router-dom";
 import SideNav from "../side-nav/side-nav";
 import NetworkPage from "../networks/NetworkPage";
+import StoragePage from "../storage/StoragePage";
+import NodePage from "../nodes/NodePage";
+import OverviewPage from "../overview/OverviewPage";
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.handleItemClick = this.handleItemClick.bind(this);
-  }
-
-  handleItemClick(e) {
-    console.log(e);
-  }
-
   render() {
     return (
       <Router>
@@ -23,8 +17,11 @@ class Home extends Component {
         <SideNav/>
         </Grid.Column>
         <Grid.Column width={12}>
+          <Route exact path="/" component={OverviewPage} />
           <Route path="/applications" component={ApplicationPage}/>
           <Route path="/networks" component={NetworkPage}/>
+          <Route path="/storage" component={StoragePage}/>
+          <Route path="/nodes" component={NodePage}/>
         </Grid.Column>
       </Grid>
       </Router>

@@ -11,6 +11,7 @@ class ComponentInfo extends Component {
   };
 
   componentDidMount() {
+    document.title = `Agogos - Applications - ${this.props.match.params.name} - ${this.props.match.params.compName}`;
     api.getCompInfo(this.props.match.params.name, this.props.match.params.compName).then(comp => {
       if (comp) {
         this.setState({comp: comp, loaded: true});

@@ -11,6 +11,7 @@ class ApplicationInfo extends Component {
   };
 
   componentDidMount() {
+    document.title = `Agogos - Applications - ${this.props.match.params.name}`;
     api.getApp(this.props.match.params.name).then(app => {
       if (app) {
         this.setState({application: app, loaded: true});
@@ -24,7 +25,7 @@ class ApplicationInfo extends Component {
     return (
       <React.Fragment>
         <Breadcrumb>
-          <Breadcrumb.Section link><Link to='/applications'>Applications</Link></Breadcrumb.Section>
+          <Breadcrumb.Section><Link to='/applications'>Applications</Link></Breadcrumb.Section>
           <Breadcrumb.Divider />
           <Breadcrumb.Section active>{this.props.match.params.name}</Breadcrumb.Section>
         </Breadcrumb>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Grid, Form, TextArea, Button, Header, List, Table} from "semantic-ui-react";
+import {Table} from "semantic-ui-react";
 import "./InfoDisplay.css"
 import {Link} from "react-router-dom";
 
@@ -17,8 +17,8 @@ class ApplicationNetworks extends Component {
           </Table.Header>
           <Table.Body>
             {this.props.app.networks.map((network, i) => {
-              return (<Table.Row>
-                <Table.Cell key={`${network}-${i}`}>
+              return (<Table.Row key={`${network}-${i}`}>
+                <Table.Cell>
                   <Link to={`/networks/${network}`}>{network}</Link>
                 </Table.Cell>
               </Table.Row>)

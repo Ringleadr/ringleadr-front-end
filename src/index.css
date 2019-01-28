@@ -23,3 +23,12 @@ code {
 .ui.left.sidebar {
   width: inherit !important;
 }
+
+.overview-card {
+  margin: 50px auto 50px auto !important;
+  padding: 10px 0px 10px 0px !important;
+}
+
+.overview-card:hover {
+  box-shadow: 0 2px 3px 0 #a5a5a5,0 0 0 2px #a5a5a5 !important;
+}

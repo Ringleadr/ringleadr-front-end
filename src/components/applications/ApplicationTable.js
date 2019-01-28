@@ -11,6 +11,7 @@ class ApplicationTable extends Component {
   };
 
   componentDidMount() {
+    document.title = "Agogos - Applications";
     api.getApps().then(apps => {
       if (apps) {
         this.setState({applications: apps, loaded: true});
@@ -54,7 +55,7 @@ class ApplicationTable extends Component {
             })}
           </Table.Body>
         </Table>}
-        <Button centered positive>Add new Application</Button>
+        <Button positive>Add new Application</Button>
       </React.Fragment>
     );
   }

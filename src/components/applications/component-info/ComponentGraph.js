@@ -53,6 +53,16 @@ class ComponentGraph extends Component {
     this.setState({crosshairValues: [this.averageData[index], this.totalData[index]]});
   };
 
+  formatTime(time) {
+    let D = time.getDate().toString().padStart(2, '0');
+    let M = (time.getMonth()+1).toString().padStart(2, '0');
+    let Y = time.getFullYear();
+    let h = time.getHours().toString().padStart(2, '0');
+    let m = time.getMinutes().toString().padStart(2, '0');
+    let s = time.getSeconds().toString().padStart(2, '0');
+    return `${D}/${M}/${Y} ${h}:${m}:${s}`
+  }
+
 
   render() {
     const {filter} = this.state;
@@ -88,7 +98,7 @@ class ComponentGraph extends Component {
               let time = e[0].x;
               return {
                 title: "Usage at",
-                value: `${time.getDate()}/${time.getMonth()+1}/${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
+                value: this.formatTime(time),
               }
             }}
             itemsFormat={(e) => {

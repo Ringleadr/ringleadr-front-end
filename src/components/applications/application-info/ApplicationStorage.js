@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Grid, Form, TextArea, Button, Header, List, Table} from "semantic-ui-react";
+import {Table} from "semantic-ui-react";
 import "./InfoDisplay.css"
 import {Link} from "react-router-dom";
 

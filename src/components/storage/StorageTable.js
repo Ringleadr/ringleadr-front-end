@@ -3,17 +3,17 @@ import {Button, Loader, Table} from 'semantic-ui-react';
 import api from "../../api/api";
 import {Link} from "react-router-dom";
 
-class NetworkTable extends Component {
+class StorageTable extends Component {
   state = {
-    networks: [],
+    storage: [],
     loaded: false,
   };
 
   componentDidMount() {
-    document.title = "Agogos - Networks";
-    api.getNetworks().then(nets => {
-      if (nets) {
-        this.setState({networks: nets, loaded: true});
+    document.title = "Agogos - Storage";
+    api.getStorage().then(storage => {
+      if (storage) {
+        this.setState({storage: storage, loaded: true});
       } else {
         this.setState({loaded: true})
       }
@@ -23,7 +23,7 @@ class NetworkTable extends Component {
   render() {
     return (
       <React.Fragment>
-        {!this.state.loaded && <Loader active size='huge' inline>Loading Networks</Loader>}
+        {!this.state.loaded && <Loader active size='huge' inline>Loading Storage</Loader>}
         {this.state.loaded && <Table>
           <Table.Header>
             <Table.Row>
@@ -33,10 +33,10 @@ class NetworkTable extends Component {
           </Table.Header>
 
           <Table.Body>
-            {this.state.networks.map((net, i) => {
-              return <Table.Row key={`${i}_${net.name.substring(7)}`}>
+            {this.state.storage.map((store, i) => {
+              return <Table.Row key={`${i}_${store.name.substring(7)}`}>
                 <Table.Cell>
-                  <Link to={`/networks/${net.name.substring(7)}`}>{net.name.substring(7)}</Link>
+                  <Link to={`/storage/${store.name.substring(7)}`}>{store.name.substring(7)}</Link>
                 </Table.Cell>
                 <Table.Cell>
                   <Button negative>Delete</Button>
@@ -50,4 +50,4 @@ class NetworkTable extends Component {
   }
 }
 
-export default NetworkTable;
+export default StorageTable;

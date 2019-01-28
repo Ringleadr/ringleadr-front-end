@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Grid, Form, TextArea, Button, Header, List, Table} from "semantic-ui-react";
+import {Table} from "semantic-ui-react";
 import "./InfoDisplay.css"
 import {Link} from "react-router-dom";
 
@@ -17,8 +17,8 @@ class ApplicationComponents extends Component {
           </Table.Header>
           <Table.Body>
             {this.props.app.components.map((comp, i) => {
-              return (<Table.Row>
-                <Table.Cell key={`${comp.name}-${i}`}>
+              return (<Table.Row key={`${comp.name}-${i}`}>
+                <Table.Cell>
                   <Link to={`/applications/${this.props.app.name}/${comp.name}`}>{comp.name}</Link>
                 </Table.Cell>
               </Table.Row>)

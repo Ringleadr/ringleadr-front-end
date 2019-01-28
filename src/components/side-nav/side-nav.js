@@ -8,9 +8,12 @@ class SideNav extends Component {
     let activeItem = temp.substring(0, temp.indexOf("/") > 0 ? temp.indexOf("/") : temp.length);
     return (
     <Sidebar as={Menu} vertical inverted visible={true}>
-      <Menu.Item>
-        <Header as='h1' inverted>Agogos</Header>
-      </Menu.Item>
+      <Link to="/">
+        <Menu.Item>
+          <Header as='h1' inverted>Agogos</Header>
+        </Menu.Item>
+      </Link>
+
       <Link to="/">
         <Menu.Item name='overview' active={activeItem === ''}>
           Overview
