@@ -1,21 +1,35 @@
 import React, { Component } from 'react';
-import {Grid, Form, TextArea, Button, Header} from "semantic-ui-react";
+import {Grid, Form, TextArea, Button, Header, Message} from "semantic-ui-react";
 import "./InfoDisplay.css"
 import ApplicationComponents from "./ApplicationComponents";
 import ApplicationNetworks from "./ApplicationNetworks";
 import ApplicationStorage from "./ApplicationStorage";
+import api from "../../../api/api";
 
 class InfoDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      areaValue: JSON.stringify(this.props.app, null, 4)
-    }
+      areaValue: JSON.stringify(this.props.app, null, 4),
+      showSuccess: false
+    };
     this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleOnChange(e) {
     this.setState({areaValue: e.target.value})
+  }
+
+  handleDelete() {
+    api.deleteApp(this.props.app.name).then(success => {
+      if (success) {
+        this.setState({showSuccess: true})
+        setTimeout(function() {
+          window.location = "/applications";
+        }, 2000)
+      }
+    })
   }
 
   render() {
@@ -43,8 +57,11 @@ class InfoDisplay extends Component {
         </Grid>
         <Grid centered columns={1} padded>
           <Button color="yellow">Update</Button>
-          <Button negative>Delete</Button>
+          <Button negative onClick={this.handleDelete}>Delete</Button>
         </Grid>
+        <Message positive size='huge' floating hidden={!this.state.showSuccess}>
+          <b>Success</b>
+        </Message>
       </React.Fragment>
     );
   }

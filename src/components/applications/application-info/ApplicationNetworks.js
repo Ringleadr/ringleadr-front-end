@@ -16,7 +16,7 @@ class ApplicationNetworks extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {this.props.app.networks.map((network, i) => {
+            {this.props.app && this.props.app.networks.map((network, i) => {
               return (<Table.Row key={`${network}-${i}`}>
                 <Table.Cell>
                   <Link to={`/networks/${network}`}>{network}</Link>

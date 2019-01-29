@@ -16,7 +16,7 @@ class ApplicationComponents extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {this.props.app.components.map((comp, i) => {
+            {this.props.app && this.props.app.components.map((comp, i) => {
               return (<Table.Row key={`${comp.name}-${i}`}>
                 <Table.Cell>
                   <Link to={`/applications/${this.props.app.name}/${comp.name}`}>{comp.name}</Link>

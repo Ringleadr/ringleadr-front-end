@@ -23,7 +23,7 @@ class ApplicationStorage extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {this.props.app.components.forEach((comp) => {
+            {this.props.app && this.props.app.components.forEach((comp) => {
               if (comp.storage.length > 0) {
                 comp.storage.forEach(store => {
                   storeResults.push({comp: comp.name, name: store.name, mount: store.mount_path})

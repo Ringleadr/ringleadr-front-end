@@ -9,6 +9,11 @@ const API = {
     return await response.json();
   },
 
+  async deleteApp(name) {
+    const response = await fetch(`http://localhost:14440/applications/${name}`, {method: 'delete'});
+    return response.ok;
+  },
+
   async getNetworks() {
     const response = await fetch(`http://localhost:14440/networks`);
     return await response.json();
