@@ -11,7 +11,8 @@ class InfoDisplay extends Component {
     super(props);
     this.state = {
       areaValue: JSON.stringify(this.props.app, null, 4),
-      showSuccess: false
+      showSuccess: false,
+      showFailure: false
     };
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -24,10 +25,13 @@ class InfoDisplay extends Component {
   handleDelete() {
     api.deleteApp(this.props.app.name).then(success => {
       if (success) {
-        this.setState({showSuccess: true})
+        this.setState({showSuccess: true});
         setTimeout(function() {
           window.location = "/applications";
-        }, 2000)
+        }, 1500)
+      } else {
+        this.setState({showFailure: true});
+        //Don't redirect... but maybe do something?
       }
     })
   }
@@ -61,6 +65,9 @@ class InfoDisplay extends Component {
         </Grid>
         <Message positive size='huge' floating hidden={!this.state.showSuccess}>
           <b>Success</b>
+        </Message>
+        <Message negative size='huge' floating hidden={!this.state.showFailure}>
+          <b>Something went wrong... :(</b>
         </Message>
       </React.Fragment>
     );
