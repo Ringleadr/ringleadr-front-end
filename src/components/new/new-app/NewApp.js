@@ -2,14 +2,19 @@ import React, { Component } from 'react';
 import {Button, Form, Header, Input, Search} from 'semantic-ui-react';
 import "../new.css";
 import api from "../../../api/api";
+import ComponentForm from "./ComponentForm";
 
 class NewApp extends Component {
   constructor(props) {
     super(props);
-    this.state = {name: '', copies: 0, node: '', networks: [], networkResults: []};
+    this.state = {name: '', copies: 0, node: '', networks: [], networkResults: [], components: [{}]};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addNetwork = this.addNetwork.bind(this);
+    this.deleteNetwork = this.deleteNetwork.bind(this);
+    this.addComponent = this.addComponent.bind(this);
+    this.onComponentChange = this.onComponentChange.bind(this);
+    this.deleteComp = this.deleteComp.bind(this);
   }
 
   componentDidMount() {
@@ -62,31 +67,48 @@ class NewApp extends Component {
     this.setState({networks: networks})
   }
 
+  addComponent() {
+    this.setState((prevState) => ({
+      components: [...prevState.components, {}],
+    }));
+  }
+
+  deleteComp(i) {
+    let {components} = this.state;
+    components.splice(i, 1);
+    this.setState({components: components})
+  }
+
+  onComponentChange(i, e, d) {
+    let {components} = this.state;
+    components[i][d.name] = d.value;
+    this.setState({components: components})
+  }
+
   render() {
-    const {name, copies, networks, node} = this.state;
+    const {name, copies, networks, node, components} = this.state;
 
     return (
       <React.Fragment>
         <Header as={'h2'}>Application</Header>
         <Form className={'new-form'} onSubmit={this.handleSubmit}>
-          <Form.Field inline required>
+          <Form.Field width={6} required>
             <label>Name</label>
             <Input placeholder='Application name' onChange={this.handleChange} name={'name'} value={name} />
           </Form.Field>
 
-          <Form.Field inline >
+          <Form.Field width={6} >
             <label>Copies</label>
             <Input placeholder='Copies' onChange={this.handleChange} name={'copies'} value={copies} />
           </Form.Field>
 
-          <Form.Field inline>
-            <label>Networks</label>
-            <Button onClick={this.addNetwork} size={'mini'} icon={'plus'}/>
+          <Form.Field width={6}>
+            <label>Networks <Button className={'add-button'} onClick={this.addNetwork} size={'mini'} icon={'plus'}/></label>
             <div className={'network-input-group'}>
             {networks.map((net, i) => {
               return (
                 <div className={'network-input-wrapper'} key={`network-wrapper-${i}`}>
-                <Search fluid={false}
+                <Search
                         key={`network-${i}`}
                         placeholder='Network name'
                         value={net}
@@ -103,15 +125,29 @@ class NewApp extends Component {
             </div>
           </Form.Field>
 
-          <Form.Field inline>
+          <Form.Field width={6}>
             <label>Node</label>
-            <Input placeholder='Node' onChange={this.handleChange} name={'node'} value={node} />
+            <Input placeholder='Node (auto assigned if empty)' onChange={this.handleChange} name={'node'} value={node} />
+          </Form.Field>
+
+          <Form.Field width={12} required>
+            <label>Components (At least one required) <Button className={'add-button'} onClick={this.addComponent} size={'mini'} icon={'plus'}/></label>
+              {components.map((comp, i) => {
+                return (
+                  <ComponentForm key={`comp-${i}`}
+                                 propsOnChange={(e, d) => this.onComponentChange(i, e, d)}
+                                 component={comp}
+                                 deletable={components.length > 1}
+                                 deleteOnClick={() => this.deleteComp(i)}
+                  />
+                )
+              })}
           </Form.Field>
 
           <Button type={'submit'}>Submit</Button>
         </Form>
         <strong>onChange:</strong>
-        <pre>{JSON.stringify({ name, copies, networks, node }, null, 2)}</pre>
+        <pre>{JSON.stringify({ name, copies, networks, node, components }, null, 2)}</pre>
       </React.Fragment>
     );
   }

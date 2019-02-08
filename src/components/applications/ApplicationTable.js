@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Icon, Loader, Table} from 'semantic-ui-react';
+import {Button, Loader} from 'semantic-ui-react';
 import './Applications.css';
 import api from "../../api/api";
 import {Link} from "react-router-dom";
