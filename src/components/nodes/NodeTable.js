@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Loader, Table} from 'semantic-ui-react';
 import api from "../../api/api";
+import {Link} from "react-router-dom";
 
 class NodeTable extends Component {
   state = {
@@ -36,7 +37,7 @@ class NodeTable extends Component {
             {this.state.nodes.map((node, i) => {
               return <Table.Row key={`${i}_${node.name}`}>
                 <Table.Cell>
-                  {node.name}
+                  <Link to={`/nodes/${node.name}`}>{node.name}</Link>
                 </Table.Cell>
                 <Table.Cell>
                   {node.address}

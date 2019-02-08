@@ -7,6 +7,7 @@ import NetworkPage from "../networks/NetworkPage";
 import StoragePage from "../storage/StoragePage";
 import NodePage from "../nodes/NodePage";
 import OverviewPage from "../overview/OverviewPage";
+import New from "../new/New";
 
 class Home extends Component {
   render() {
@@ -22,6 +23,7 @@ class Home extends Component {
           <Route path="/networks" component={NetworkPage}/>
           <Route path="/storage" component={StoragePage}/>
           <Route path="/nodes" component={NodePage}/>
+          <Route path="/new" component={New}/>
         </Grid.Column>
       </Grid>
       </Router>

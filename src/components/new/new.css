@@ -1,0 +1,17 @@
+.new-form {
+    padding: 20px;
+}
+
+.network-input-wrapper {
+    display: block !important;
+}
+
+.network-input {
+    padding-left: 50px;
+    display: inline-block !important;
+    margin-top: 15px !important;
+}
+
+.delete-network {
+    margin-left: 10px !important;
+}

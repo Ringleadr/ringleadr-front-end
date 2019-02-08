@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Table} from "semantic-ui-react";
+import {Popup, Table} from "semantic-ui-react";
 import "./InfoDisplay.css"
 import {Link} from "react-router-dom";
 
@@ -33,13 +33,14 @@ class ApplicationStorage extends Component {
             {storeResults.length === 0 ? <Table.Row><Table.Cell>-</Table.Cell></Table.Row> : storeResults.map((res, i) => {
               return (<Table.Row key={`${res.comp}-${res.name}-${i}`}>
                 <Table.Cell>
-                  <Link to={`/storage/${res.name}`}>{res.name}</Link>
+                  {res.name.charAt(0) !== '/' ? <Link to={`/storage/${res.name}`}>{res.name}</Link> :
+                    <Popup trigger={<code>{res.name}</code>} content={"Mounted from host machine"} inverted basic position={"left center"}/>}
                 </Table.Cell>
                 <Table.Cell>
                   <Link to={`/applications/${this.props.app.name}/${res.comp}`}>{res.comp}</Link>
                 </Table.Cell>
                 <Table.Cell>
-                  {res.mount}
+                  <code>{res.mount}</code>
                 </Table.Cell>
               </Table.Row>)
             })}

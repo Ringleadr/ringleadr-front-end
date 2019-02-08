@@ -14,6 +14,11 @@ const API = {
     return response.ok;
   },
 
+  async updateApp(body) {
+    const response = await fetch(`http://localhost:14440/applications`, {method: 'put', body: body});
+    return response.ok;
+  },
+
   async getNetworks() {
     const response = await fetch(`http://localhost:14440/networks`);
     return await response.json();
