@@ -12,7 +12,40 @@
     flex-grow: 1;
 }
 
+.env-input-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 15px !important;
+}
+
+.env-input {
+    flex-grow: 1;
+}
+
+.port-input-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 15px !important;
+}
+
+.port-input {
+    flex-grow: 1;
+}
+
+.port-arrow {
+    padding-left: 30px;
+    padding-right: 35px;
+}
+
 .delete-network {
+    margin-left: 10px !important;
+}
+
+.delete-env {
+    margin-left: 10px !important;
+}
+
+.delete-port {
     margin-left: 10px !important;
 }
 

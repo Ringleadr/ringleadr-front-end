@@ -7,7 +7,9 @@ import ComponentForm from "./ComponentForm";
 class NewApp extends Component {
   constructor(props) {
     super(props);
-    this.state = {name: '', copies: 0, node: '', networks: [], networkResults: [], components: [{}]};
+    this.state = {name: '', copies: '', node: '', networks: [], networkResults: [], components: [{
+      name: '', image: '', replicas: '', scale_threshold: '', scale_min: '', scale_max: '', env: [], ports: []
+      }]};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addNetwork = this.addNetwork.bind(this);
@@ -34,9 +36,34 @@ class NewApp extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
   handleSubmit = () => {
-    const { name, email } = this.state;
+    let {name, copies, networks, node, components} = this.state;
+    if (name === '') {
+      console.log('name must not be empty')
+    }
 
-    this.setState({ submittedName: name, submittedEmail: email })
+    networks = networks.filter(name => name !== '');
+
+
+    //Underlying ports variable is not immutable. This is changing state.
+    //Only run this calculation when we are certain we can submit
+    components.forEach(comp => {
+      if (comp.image === ''){
+        console.log(`${comp.name}'s image is empty`)
+      }
+      // comp.ports = comp.ports.reduce((p, c) => {
+      //   p[c.key] = c.value;
+      //   return p;
+      // }, {});
+    });
+
+    let application = {
+      name: name,
+      copies: copies,
+      networks: networks,
+      node: node,
+      components: components
+    };
+    console.log(application);
   };
 
   handleNetworkSearchChange(i, e) {
@@ -69,7 +96,8 @@ class NewApp extends Component {
 
   addComponent() {
     this.setState((prevState) => ({
-      components: [...prevState.components, {}],
+      components: [...prevState.components,
+        {name: '', image: '', replicas: '', scale_threshold: '', scale_min: '', scale_max: '', env: [], ports: []}],
     }));
   }
 
@@ -83,6 +111,52 @@ class NewApp extends Component {
     let {components} = this.state;
     components[i][d.name] = d.value;
     this.setState({components: components})
+  }
+
+  addEnvToComp(i) {
+    let {components} = this.state;
+    components[i].env = [...components[i].env || [], ''];
+    this.setState({components: components})
+  }
+
+  updateEnvForComp(i, j, e) {
+    let {components} = this.state;
+    components[i]["env"][j] = e.target.value;
+    this.setState({components: components})
+  }
+
+  deleteEnvForComp(i,j) {
+    let {components} = this.state;
+    components[i].env.splice(j, 1);
+    this.setState({components: components})
+  }
+
+  addPortForComp(i) {
+    let {components} = this.state;
+    components[i].ports = [...components[i].ports || [], {key: '', value:''}];
+    this.setState({components: components})
+  }
+
+  portOnChangeKey(i, j, e) {
+    let {components} = this.state;
+    components[i].ports[j].key = e.target.value;
+    this.setState({components: components})
+  }
+
+  portOnChangeVal(i, j, e) {
+    let {components} = this.state;
+    components[i].ports[j].value = e.target.value;
+    this.setState({components: components})
+  }
+
+  deletePort(i, j) {
+    let {components} = this.state;
+    components[i].ports.splice(j,1);
+    this.setState({components: components})
+  }
+
+  void() {
+    //no-op
   }
 
   render() {
@@ -103,7 +177,12 @@ class NewApp extends Component {
           </Form.Field>
 
           <Form.Field width={6}>
-            <label>Networks <Button className={'add-button'} onClick={this.addNetwork} size={'mini'} icon={'plus'}/></label>
+            <label>Networks <Button type={'button'} className={'add-button'} onClick={(e) => {
+              //Only call the function if clientX is greater than 0. This occurs when the button has been clicked rather than activated by pressing enter on another field
+              if (e.clientX > 0) {
+                this.addNetwork()
+              }
+            }} size={'mini'} icon={'plus'} onKeyPress={this.void}/></label>
             <div className={'network-input-group'}>
             {networks.map((net, i) => {
               return (
@@ -118,7 +197,7 @@ class NewApp extends Component {
                         results={this.state.networkResults}
                         noResultsMessage={'Enter a new network name to create a new network'}
                 />
-                  <Button className={'delete-network'} negative onClick={() => this.deleteNetwork(i)} key={`delete-${i}`} icon={'close'} size={"mini"}/>
+                  <Button type={'button'} className={'delete-network'} negative onClick={() => this.deleteNetwork(i)} key={`delete-${i}`} icon={'close'} size={"mini"}/>
                 </div>
               )
             })}
@@ -131,7 +210,7 @@ class NewApp extends Component {
           </Form.Field>
 
           <Form.Field width={12} required>
-            <label>Components (At least one required) <Button className={'add-button'} onClick={this.addComponent} size={'mini'} icon={'plus'}/></label>
+            <label>Components (At least one required) <Button type={'button'} className={'add-button'} onClick={this.addComponent} size={'mini'} icon={'plus'}/></label>
               {components.map((comp, i) => {
                 return (
                   <ComponentForm key={`comp-${i}`}
@@ -139,6 +218,13 @@ class NewApp extends Component {
                                  component={comp}
                                  deletable={components.length > 1}
                                  deleteOnClick={() => this.deleteComp(i)}
+                                 addEnv={() => this.addEnvToComp(i)}
+                                 envOnChange={(e, j) =>  this.updateEnvForComp(i, j, e)}
+                                 envOnDelete={(j) => this.deleteEnvForComp(i, j)}
+                                 addPort={() => this.addPortForComp(i)}
+                                 portOnChangeKey={(oldkey, e) => this.portOnChangeKey(i, oldkey, e)}
+                                 portOnChangeVal={(key, val) => this.portOnChangeVal(i, key, val)}
+                                 deletePort={(key) => this.deletePort(i, key)}
                   />
                 )
               })}

@@ -24,6 +24,21 @@ const API = {
     return await response.json();
   },
 
+  async createNetwork(name) {
+    const response = await fetch(`http://localhost:14440/networks/${name}`, {method: 'post'});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
+  },
+
+  async deleteNetwork(name) {
+    //Remove 'agogos-' from the name
+    const response = await fetch(`http://localhost:14440/networks/${name.substr(7)}`, {method: 'delete'});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
+  },
+
   async getCompInfo(appName, compName) {
     const response = await fetch(`http://localhost:14440/application/${appName}/${compName}`);
     return await response.json();

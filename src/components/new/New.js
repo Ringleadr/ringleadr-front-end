@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {Header} from 'semantic-ui-react';
 import {Route} from "react-router-dom";
-import NewApp from "./new-app/NewApp";
+import NewApp from "./app/NewApp";
+import NewNetwork from "./network/NewNetwork";
 
 class New extends Component {
   componentDidMount() {
@@ -13,6 +14,8 @@ class New extends Component {
       <React.Fragment>
         <Header as='h1' className='page-header'>New</Header>
         <Route exact path="/new/application" component={NewApp}/>
+        <Route exact path="/new/network" component={NewNetwork}/>
+
       </React.Fragment>
     );
   }
