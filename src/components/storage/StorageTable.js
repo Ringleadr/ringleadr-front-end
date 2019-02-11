@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Loader, Table} from 'semantic-ui-react';
+import {Button, Loader, Message, Table} from 'semantic-ui-react';
 import api from "../../api/api";
 import {Link} from "react-router-dom";
 
@@ -7,6 +7,9 @@ class StorageTable extends Component {
   state = {
     storage: [],
     loaded: false,
+    showSuccess: false,
+    showFailure: false,
+    failureMessage: '',
   };
 
   componentDidMount() {
@@ -18,6 +21,17 @@ class StorageTable extends Component {
         this.setState({loaded: true})
       }
     })
+  }
+
+  deleteStorage(name) {
+    api.deleteStorage(name).then((resp) => {
+      if (resp.ok) {
+        this.setState({showSuccess: true});
+        setTimeout(() => window.location.reload(), 1500);
+      } else {
+        this.setState({showFailure: true, failureMessage: resp.msg})
+      }
+    });
   }
 
   render() {
@@ -39,12 +53,18 @@ class StorageTable extends Component {
                   <Link to={`/storage/${store.name.substring(7)}`}>{store.name.substring(7)}</Link>
                 </Table.Cell>
                 <Table.Cell>
-                  <Button negative>Delete</Button>
+                  <Button negative onClick={() => this.deleteStorage(store.name)}>Delete</Button>
                 </Table.Cell>
               </Table.Row>
             })}
           </Table.Body>
         </Table>}
+        <Link to={"/new/storage"}><Button positive>New Storage</Button></Link>
+        <Message positive hidden={!this.state.showSuccess}>Storage successfully deleted</Message>
+        <Message error hidden={!this.state.showFailure}>
+          <Message.Header>Something went wrong</Message.Header>
+          {this.state.failureMessage}
+        </Message>
       </React.Fragment>
     );
   }

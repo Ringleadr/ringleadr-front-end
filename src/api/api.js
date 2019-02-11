@@ -56,6 +56,21 @@ const API = {
     return await response.json();
   },
 
+  async createStorage(name) {
+    const response = await fetch(`http://localhost:14440/storage/${name}`, {method: 'post'});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
+  },
+
+  async deleteStorage(name) {
+    //Remove 'agogos-' from the name
+    const response = await fetch(`http://localhost:14440/storage/${name.substr(7)}`, {method: 'delete'});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
+  },
+
   async getNodes() {
     const response = await fetch('http://localhost:14440/nodes');
     return await response.json();
