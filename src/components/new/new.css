@@ -20,6 +20,7 @@
 
 .env-input {
     flex-grow: 1;
+    margin: 0 !important;
 }
 
 .port-input-wrapper {
@@ -30,6 +31,7 @@
 
 .port-input {
     flex-grow: 1;
+    margin: 0 !important;
 }
 
 .port-arrow {
@@ -70,4 +72,13 @@
 
 .delete-component {
     margin-left: 10px !important;
+}
+
+.custom-label {
+    margin: 0 !important;
+    display: inherit !important;
+}
+
+.new-form label {
+    display: inline-block !important;
 }

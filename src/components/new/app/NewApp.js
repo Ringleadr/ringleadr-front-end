@@ -1,15 +1,31 @@
-import React, { Component } from 'react';
-import {Button, Form, Header, Input, Search} from 'semantic-ui-react';
+import React, {Component} from 'react';
+import {Button, Dropdown, Header, Label, Message, Search} from 'semantic-ui-react';
+import {Form, Input} from 'formsy-semantic-ui-react';
 import "../new.css";
 import api from "../../../api/api";
 import ComponentForm from "./ComponentForm";
+import {addValidationRule} from "formsy-react";
+
+const errorLabel = <Label color="red" pointing/>;
+
+addValidationRule('isValidInt', function (values, value) {
+  let n = Number(value);
+  return Number.isFinite(n) && Number.isInteger(n) && n >= 0;
+});
+
+addValidationRule('isValidFloat', function (values, value) {
+  let n = Number(value);
+  return Number.isFinite(n) && n >= 0;
+});
 
 class NewApp extends Component {
   constructor(props) {
     super(props);
-    this.state = {name: '', copies: '', node: '', networks: [], networkResults: [], components: [{
-      name: '', image: '', replicas: '', scale_threshold: '', scale_min: '', scale_max: '', env: [], ports: []
-      }]};
+    this.state = {
+      name: '', copies: '', node: '', networks: [], networkResults: [], components: [{
+        name: '', image: '', replicas: '', scale_threshold: '', scale_min: '', scale_max: '', env: [], ports: [], storage: []
+      }]
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addNetwork = this.addNetwork.bind(this);
@@ -23,47 +39,74 @@ class NewApp extends Component {
     document.title = "Agogos - New Application";
     api.getNetworks().then(nets => {
       if (nets) {
-        this.setState({fetchedNetworks: nets.map(a => {
-          return {
-            title: a.name.substr(7)
-          }}), loaded: true});
+        this.setState({
+          fetchedNetworks: nets.map(a => {
+            return {
+              title: a.name.substr(7)
+            }
+          }), loaded: true
+        });
       } else {
         this.setState({loaded: true})
+      }
+    });
+    api.getNodes().then(nodes => {
+      if (nodes) {
+        let formatNodes = nodes.map(node => {
+          return {
+            text: node.name,
+            value: node.name
+          }
+        });
+        formatNodes.push({text: '* (All nodes)', value: '*'});
+        formatNodes.push({text: 'Auto Assign', value: ''});
+        this.setState({fetchedNodes: formatNodes})
+      }
+    });
+    api.getStorage().then(storage => {
+      if (storage) {
+        this.setState({fetchedStorage: storage.map(a => {return {title: a.name.substr(7)}})})
       }
     })
   }
 
-  handleChange = (e, { name, value }) => this.setState({ [name]: value });
+  handleChange = (e, {name, value}) => this.setState({[name]: value});
 
   handleSubmit = () => {
     let {name, copies, networks, node, components} = this.state;
-    if (name === '') {
-      console.log('name must not be empty')
-    }
 
     networks = networks.filter(name => name !== '');
 
-
-    //Underlying ports variable is not immutable. This is changing state.
-    //Only run this calculation when we are certain we can submit
-    components.forEach(comp => {
-      if (comp.image === ''){
-        console.log(`${comp.name}'s image is empty`)
-      }
-      // comp.ports = comp.ports.reduce((p, c) => {
-      //   p[c.key] = c.value;
-      //   return p;
-      // }, {});
-    });
-
     let application = {
       name: name,
-      copies: copies,
+      copies: parseInt(copies, 10),
       networks: networks,
       node: node,
-      components: components
+      components: components.map(comp => {
+        return {
+          name: comp.name,
+          image: comp.image,
+          replicas: parseInt(comp.replicas, 10),
+          scale_threshold: parseFloat(comp.scale_threshold),
+          scale_min: parseInt(comp.scale_min, 10),
+          scale_max: parseInt(comp.scale_max, 10),
+          env: comp.env,
+          ports: comp.ports.reduce((p, c) => {
+            p[c.key] = c.value;
+            return p;
+          }, {}),
+          storage: comp.storage.filter(c => c.name !== '')
+        };
+      })
     };
     console.log(application);
+    api.createApp(application).then((resp) => {
+      if (resp.ok) {
+        window.location = "/applications";
+      } else {
+        this.setState({createError: true, errorMsg: resp.msg})
+      }
+    });
   };
 
   handleNetworkSearchChange(i, e) {
@@ -80,6 +123,28 @@ class NewApp extends Component {
     let {networks} = this.state;
     networks[i] = d.result.title;
     this.setState({networks: networks});
+  }
+
+  handleStorageSearchChange(i, j, e) {
+    let {components} = this.state;
+    components[i].storage[j].name = e.target.value;
+    this.setState({components: components});
+    let storageResults = this.state.fetchedStorage.filter(a => a.title.indexOf(e.target.value) > -1);
+    this.setState({
+      storageResults: storageResults,
+    })
+  };
+
+  handleStorageResultSelect(i, j, e, d) {
+    let {components} = this.state;
+    components[i].storage[j].name = d.result.title;
+    this.setState({components: components});
+  }
+
+  handleStoragePathChange(i, j, e) {
+    let {components} = this.state;
+    components[i].storage[j].mount_path = e.target.value;
+    this.setState({components: components});
   }
 
   addNetwork() {
@@ -125,7 +190,7 @@ class NewApp extends Component {
     this.setState({components: components})
   }
 
-  deleteEnvForComp(i,j) {
+  deleteEnvForComp(i, j) {
     let {components} = this.state;
     components[i].env.splice(j, 1);
     this.setState({components: components})
@@ -133,7 +198,7 @@ class NewApp extends Component {
 
   addPortForComp(i) {
     let {components} = this.state;
-    components[i].ports = [...components[i].ports || [], {key: '', value:''}];
+    components[i].ports = [...components[i].ports || [], {key: '', value: ''}];
     this.setState({components: components})
   }
 
@@ -151,7 +216,19 @@ class NewApp extends Component {
 
   deletePort(i, j) {
     let {components} = this.state;
-    components[i].ports.splice(j,1);
+    components[i].ports.splice(j, 1);
+    this.setState({components: components})
+  }
+
+  deleteStore(i, j) {
+    let {components} = this.state;
+    components[i].storage.splice(j, 1);
+    this.setState({components: components})
+  }
+
+  addStoreForComp(i) {
+    let {components} = this.state;
+    components[i].storage = [...components[i].storage || [], {name: '', mount_path: ''}];
     this.setState({components: components})
   }
 
@@ -165,15 +242,18 @@ class NewApp extends Component {
     return (
       <React.Fragment>
         <Header as={'h2'}>Application</Header>
-        <Form className={'new-form'} onSubmit={this.handleSubmit}>
+        <Message error hidden={!this.state.createError}><strong>Error response from server: </strong>{this.state.errorMsg}</Message>
+        <Form className={'new-form'} onValidSubmit={this.handleSubmit}>
           <Form.Field width={6} required>
             <label>Name</label>
-            <Input placeholder='Application name' onChange={this.handleChange} name={'name'} value={name} />
+            <Input placeholder='Application name' onChange={this.handleChange} name={'name'} value={name} required
+                   validationErrors={{isDefaultRequiredValue: 'Application name cannot be blank'}} errorLabel={errorLabel}/>
           </Form.Field>
 
-          <Form.Field width={6} >
+          <Form.Field width={6}>
             <label>Copies</label>
-            <Input placeholder='Copies' onChange={this.handleChange} name={'copies'} value={copies} />
+            <Input placeholder='#Copies' onChange={this.handleChange} name={'copies'} value={copies} instantValidation
+                   validations={'isValidInt'} validationError={'Copies must be a positive Integer'} errorLabel={errorLabel}/>
           </Form.Field>
 
           <Form.Field width={6}>
@@ -184,56 +264,64 @@ class NewApp extends Component {
               }
             }} size={'mini'} icon={'plus'} onKeyPress={this.void}/></label>
             <div className={'network-input-group'}>
-            {networks.map((net, i) => {
-              return (
-                <div className={'network-input-wrapper'} key={`network-wrapper-${i}`}>
-                <Search
-                        key={`network-${i}`}
-                        placeholder='Network name'
-                        value={net}
-                        className={'network-input'}
-                        onSearchChange={e => this.handleNetworkSearchChange(i, e)}
-                        onResultSelect={(e, d) => this.handleResultSelect(i, e, d)}
-                        results={this.state.networkResults}
-                        noResultsMessage={'Enter a new network name to create a new network'}
-                />
-                  <Button type={'button'} className={'delete-network'} negative onClick={() => this.deleteNetwork(i)} key={`delete-${i}`} icon={'close'} size={"mini"}/>
-                </div>
-              )
-            })}
+              {networks.map((net, i) => {
+                return (
+                  <div className={'network-input-wrapper'} key={`network-wrapper-${i}`}>
+                    <Search key={`network-${i}`}
+                            placeholder='Network name'
+                            value={net}
+                            className={'network-input'}
+                            onSearchChange={e => this.handleNetworkSearchChange(i, e)}
+                            onResultSelect={(e, d) => this.handleResultSelect(i, e, d)}
+                            results={this.state.networkResults}
+                            noResultsMessage={'Enter a new network name to create a new network'}
+                    />
+                    <Button type={'button'} className={'delete-network'} negative onClick={() => this.deleteNetwork(i)}
+                            key={`delete-${i}`} icon={'close'} size={"mini"}/>
+                  </div>
+                )
+              })}
             </div>
           </Form.Field>
 
           <Form.Field width={6}>
             <label>Node</label>
-            <Input placeholder='Node (auto assigned if empty)' onChange={this.handleChange} name={'node'} value={node} />
+            <Dropdown placeholder='Auto assigned if empty' onChange={this.handleChange} name={'node'} value={node} selection options={this.state.fetchedNodes || []}/>
           </Form.Field>
 
           <Form.Field width={12} required>
-            <label>Components (At least one required) <Button type={'button'} className={'add-button'} onClick={this.addComponent} size={'mini'} icon={'plus'}/></label>
-              {components.map((comp, i) => {
-                return (
-                  <ComponentForm key={`comp-${i}`}
-                                 propsOnChange={(e, d) => this.onComponentChange(i, e, d)}
-                                 component={comp}
-                                 deletable={components.length > 1}
-                                 deleteOnClick={() => this.deleteComp(i)}
-                                 addEnv={() => this.addEnvToComp(i)}
-                                 envOnChange={(e, j) =>  this.updateEnvForComp(i, j, e)}
-                                 envOnDelete={(j) => this.deleteEnvForComp(i, j)}
-                                 addPort={() => this.addPortForComp(i)}
-                                 portOnChangeKey={(oldkey, e) => this.portOnChangeKey(i, oldkey, e)}
-                                 portOnChangeVal={(key, val) => this.portOnChangeVal(i, key, val)}
-                                 deletePort={(key) => this.deletePort(i, key)}
-                  />
-                )
-              })}
+            <label>Components (At least one required)
+              <Button type={'button'} className={'add-button'} onClick={this.addComponent} size={'mini'} icon={'plus'}/>
+            </label>
+            {components.map((comp, i) => {
+              return (
+                <ComponentForm key={`comp-${i}`}
+                               propsOnChange={(e, d) => this.onComponentChange(i, e, d)}
+                               component={comp}
+                               deletable={components.length > 1}
+                               deleteOnClick={() => this.deleteComp(i)}
+                               addEnv={() => this.addEnvToComp(i)}
+                               envOnChange={(e, j) => this.updateEnvForComp(i, j, e)}
+                               envOnDelete={(j) => this.deleteEnvForComp(i, j)}
+                               addPort={() => this.addPortForComp(i)}
+                               portOnChangeKey={(oldkey, e) => this.portOnChangeKey(i, oldkey, e)}
+                               portOnChangeVal={(key, val) => this.portOnChangeVal(i, key, val)}
+                               deletePort={(key) => this.deletePort(i, key)}
+                               addStore={() => this.addStoreForComp(i)}
+                               handleStorageSearchChange={(j, e) => this.handleStorageSearchChange(i,j,e)}
+                               handleStorageResultSelect={(j,e,d) => this.handleStorageResultSelect(i,j,e,d)}
+                               deleteStorage={(j) => this.deleteStore(i, j)}
+                               handleStoragePathChange={(j, e) => this.handleStoragePathChange(i, j, e)}
+                               storageResults={this.state.storageResults}
+                />
+              )
+            })}
           </Form.Field>
 
           <Button type={'submit'}>Submit</Button>
         </Form>
         <strong>onChange:</strong>
-        <pre>{JSON.stringify({ name, copies, networks, node, components }, null, 2)}</pre>
+        <pre>{JSON.stringify({name, copies, networks, node, components}, null, 2)}</pre>
       </React.Fragment>
     );
   }

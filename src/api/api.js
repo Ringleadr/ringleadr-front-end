@@ -19,6 +19,13 @@ const API = {
     return response.ok;
   },
 
+  async createApp(app) {
+    const response = await fetch(`http://localhost:14440/applications`, {method: 'post', body: JSON.stringify(app)});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
+  },
+
   async getNetworks() {
     const response = await fetch(`http://localhost:14440/networks`);
     return await response.json();
