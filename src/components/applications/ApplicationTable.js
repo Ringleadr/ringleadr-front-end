@@ -27,7 +27,7 @@ class ApplicationTable extends Component {
       <React.Fragment>
         {!this.state.loaded && <Loader active size='huge' inline>Loading Applications</Loader>}
         {this.state.loaded && this.state.applications && <AppTable applications={this.state.applications}/>}
-        <Link to={"/new/application"}><Button positive>Add new Application</Button></Link>
+        <Link to={"/new/application"}><Button positive>New Application</Button></Link>
       </React.Fragment>
     );
   }

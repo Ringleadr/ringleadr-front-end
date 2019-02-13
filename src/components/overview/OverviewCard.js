@@ -15,7 +15,7 @@ class OverviewCard extends React.Component {
             <Grid.Row>
               <Statistic>
                 <Statistic.Value>{this.props.value}</Statistic.Value>
-                <Statistic.Label>{this.props.label}{this.props.value > 1 ? 's' : ''}</Statistic.Label>
+                <Statistic.Label>{this.props.label}{!this.props.noS && this.props.value !== 1 ? 's' : ''}</Statistic.Label>
               </Statistic>
             </Grid.Row>
           </Grid>

@@ -16,7 +16,9 @@ const API = {
 
   async updateApp(body) {
     const response = await fetch(`http://localhost:14440/applications`, {method: 'put', body: body});
-    return response.ok;
+    let ok = response.ok;
+    let respBody = await response.text();
+    return {ok: ok, msg: respBody};
   },
 
   async createApp(app) {

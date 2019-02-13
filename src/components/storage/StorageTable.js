@@ -37,6 +37,11 @@ class StorageTable extends Component {
   render() {
     return (
       <React.Fragment>
+        <Message positive hidden={!this.state.showSuccess}>Storage successfully deleted</Message>
+        <Message error hidden={!this.state.showFailure}>
+          <Message.Header>Something went wrong</Message.Header>
+          {this.state.failureMessage}
+        </Message>
         {!this.state.loaded && <Loader active size='huge' inline>Loading Storage</Loader>}
         {this.state.loaded && <Table>
           <Table.Header>
@@ -60,11 +65,6 @@ class StorageTable extends Component {
           </Table.Body>
         </Table>}
         <Link to={"/new/storage"}><Button positive>New Storage</Button></Link>
-        <Message positive hidden={!this.state.showSuccess}>Storage successfully deleted</Message>
-        <Message error hidden={!this.state.showFailure}>
-          <Message.Header>Something went wrong</Message.Header>
-          {this.state.failureMessage}
-        </Message>
       </React.Fragment>
     );
   }

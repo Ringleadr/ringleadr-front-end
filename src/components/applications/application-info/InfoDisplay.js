@@ -7,24 +7,36 @@ import ApplicationStorage from "./ApplicationStorage";
 import api from "../../../api/api";
 import ApplicationNode from "./ApplicationNode";
 import ApplicationMessages from "./ApplicationMessages";
+import ComponentGraphWrapper from "../component-info/ComponentGraphWrapper";
 
 class InfoDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      areaValue: JSON.stringify(this.props.app, null, 4),
+      areaValue: JSON.stringify(this.removeAppName(this.props.app), null, 4),
       showSuccess: false,
       showFailure: false,
+      failureMessage: '',
       validJSON: true,
     };
     try {
-      JSON.parse(JSON.stringify(this.props.app, null, 4))
+      JSON.parse(JSON.stringify(this.removeAppName(this.props.app), null, 4))
     } catch (e) {
       this.state.validJSON = false
     }
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+  }
+
+  removeAppName(app) {
+    let dup = {};
+    for (let key in app) {
+      if (key !== 'name') {
+        dup[key] = app[key];
+      }
+    }
+    return dup;
   }
 
   handleOnChange(e) {
@@ -52,15 +64,17 @@ class InfoDisplay extends Component {
 
   handleUpdate() {
     if (this.state.validJSON) {
-      api.updateApp(this.state.areaValue).then(success => {
-        if (success) {
+      let updatedApp = JSON.parse(this.state.areaValue);
+      updatedApp.name = this.props.app.name;
+      console.log(updatedApp);
+      api.updateApp(JSON.stringify(updatedApp)).then(resp => {
+        if (resp.ok) {
           this.setState({showSuccess: true});
           setTimeout(function() {
             window.location = `/applications`;
           }, 1500)
         } else {
-          this.setState({showFailure: true});
-          //Don't redirect... but maybe do something?
+          this.setState({showFailure: true, failureMessage: resp.msg});
         }
       })
     }
@@ -69,6 +83,13 @@ class InfoDisplay extends Component {
   render() {
     return (
       <React.Fragment>
+        <Message positive size='big' floating hidden={!this.state.showSuccess}>
+          <b>Success</b>
+        </Message>
+        <Message negative size='big' floating hidden={!this.state.showFailure}>
+          <Message.Header>Something went wrong. Response from server:</Message.Header>
+          {this.state.failureMessage}
+        </Message>
         <Grid columns={2} padded stackable>
           <Grid.Column>
             <Header as="h2">{this.props.app.name}</Header>
@@ -96,15 +117,15 @@ class InfoDisplay extends Component {
           </Grid.Column>
         </Grid>
         <Grid centered columns={1} padded>
-          <Button color="yellow" onClick={this.handleUpdate}>Update</Button>
+          <Button onClick={this.handleUpdate} disabled={!this.state.validJSON}>Update</Button>
           <Button negative onClick={this.handleDelete}>Delete</Button>
         </Grid>
-        <Message positive size='huge' floating hidden={!this.state.showSuccess}>
-          <b>Success</b>
-        </Message>
-        <Message negative size='huge' floating hidden={!this.state.showFailure}>
-          <b>Something went wrong... :(</b>
-        </Message>
+
+        <Header as={'h3'}>Stats</Header>
+        {this.props.app.components.map((comp, i) => {
+          return (<ComponentGraphWrapper compName={comp.name} appName={this.props.app.name} key={`comp-${i}`}/>)
+        })}
+
       </React.Fragment>
     );
   }

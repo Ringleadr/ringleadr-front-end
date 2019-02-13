@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Dropdown, Header, Label, Message, Search} from 'semantic-ui-react';
+import {Button, Dropdown, Label, Message, Search} from 'semantic-ui-react';
 import {Form, Input} from 'formsy-semantic-ui-react';
 import "../new.css";
 import api from "../../../api/api";
@@ -36,7 +36,7 @@ class NewApp extends Component {
   }
 
   componentDidMount() {
-    document.title = "Agogos - New Application";
+    document.title = "Agogos - New Application - From Form";
     api.getNetworks().then(nets => {
       if (nets) {
         this.setState({
@@ -113,7 +113,12 @@ class NewApp extends Component {
     let {networks} = this.state;
     networks[i] = e.target.value;
     this.setState({networks: networks});
-    let networkResults = this.state.fetchedNetworks.filter(a => a.title.indexOf(e.target.value) > -1);
+    let networkResults;
+    if (this.state.fetchedNetworks) {
+      networkResults = this.state.fetchedNetworks.filter(a => a.title.indexOf(e.target.value) > -1);
+    } else {
+      networkResults = [];
+    }
     this.setState({
       networkResults: networkResults,
     })
@@ -129,7 +134,12 @@ class NewApp extends Component {
     let {components} = this.state;
     components[i].storage[j].name = e.target.value;
     this.setState({components: components});
-    let storageResults = this.state.fetchedStorage.filter(a => a.title.indexOf(e.target.value) > -1);
+    let storageResults;
+    if (this.state.fetchedStorage) {
+      storageResults = this.state.fetchedStorage.filter(a => a.title.indexOf(e.target.value) > -1);
+    } else {
+      storageResults = [];
+    }
     this.setState({
       storageResults: storageResults,
     })
@@ -241,7 +251,6 @@ class NewApp extends Component {
 
     return (
       <React.Fragment>
-        <Header as={'h2'}>Application</Header>
         <Message error hidden={!this.state.createError}><strong>Error response from server: </strong>{this.state.errorMsg}</Message>
         <Form className={'new-form'} onValidSubmit={this.handleSubmit}>
           <Form.Field width={6} required>
@@ -320,8 +329,6 @@ class NewApp extends Component {
 
           <Button type={'submit'}>Submit</Button>
         </Form>
-        <strong>onChange:</strong>
-        <pre>{JSON.stringify({name, copies, networks, node, components}, null, 2)}</pre>
       </React.Fragment>
     );
   }

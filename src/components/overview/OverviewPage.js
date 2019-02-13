@@ -33,7 +33,7 @@ class OverviewPage extends React.Component {
             </Grid.Column>
             <Grid.Column>
               <OverviewCard icon={'linode'} label={"Node"} value={this.state.overview.nodes}/>
-              <OverviewCard icon={'database'} link={'/storage'} label={"Storage"} value={this.state.overview.storage}/>
+              <OverviewCard icon={'database'} link={'/storage'} label={"Storage"} noS value={this.state.overview.storage}/>
             </Grid.Column>
           </Grid>}
         </Container>

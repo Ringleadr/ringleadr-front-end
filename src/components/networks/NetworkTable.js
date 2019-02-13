@@ -37,6 +37,11 @@ class NetworkTable extends Component {
   render() {
     return (
       <React.Fragment>
+        <Message positive hidden={!this.state.showSuccess}>Network successfully deleted</Message>
+        <Message error hidden={!this.state.showFailure}>
+          <Message.Header>Something went wrong</Message.Header>
+          {this.state.failureMessage}
+        </Message>
         {!this.state.loaded && <Loader active size='huge' inline>Loading Networks</Loader>}
         {this.state.loaded && <Table>
           <Table.Header>
@@ -60,11 +65,7 @@ class NetworkTable extends Component {
           </Table.Body>
         </Table>}
         <Link to={"/new/network"}><Button positive>New Network</Button></Link>
-        <Message positive hidden={!this.state.showSuccess}>Network successfully deleted</Message>
-        <Message error hidden={!this.state.showFailure}>
-          <Message.Header>Something went wrong</Message.Header>
-          {this.state.failureMessage}
-        </Message>
+
       </React.Fragment>
     );
   }
