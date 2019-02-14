@@ -3,6 +3,7 @@ import {Button, Header} from "semantic-ui-react";
 import {Link, Route} from "react-router-dom";
 import NewApp from "./NewApp";
 import AppFromRaw from "./AppFromRaw";
+import AppFromFile from "./AppFromFile";
 
 class AppIndex extends Component {
   componentDidMount() {
@@ -19,6 +20,7 @@ class AppIndex extends Component {
 
         <Route exact path={"/new/application/form"} component={NewApp}/>
         <Route exact path={"/new/application/json"} component={AppFromRaw}/>
+        <Route exact path={"/new/application/file"} component={AppFromFile}/>
 
       </React.Fragment>
     );
