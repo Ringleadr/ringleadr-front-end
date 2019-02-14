@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Icon, Label, Message} from "semantic-ui-react";
+import {Button, Icon, Message} from "semantic-ui-react";
 import api from "../../../api/api";
 
 class AppFromFile extends React.Component {
