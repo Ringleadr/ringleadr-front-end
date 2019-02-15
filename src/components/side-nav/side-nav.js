@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import {Header, Menu, Sidebar} from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
+import "./nav.css";
 
 class SideNav extends Component {
   render() {
-    let temp = window.location.pathname.substring(1);
-    let activeItem = temp.substring(0, temp.indexOf("/") > 0 ? temp.indexOf("/") : temp.length);
     return (
     <Sidebar as={Menu} vertical inverted visible={true}>
       <Link to="/">
@@ -14,35 +13,35 @@ class SideNav extends Component {
         </Menu.Item>
       </Link>
 
-      <Link to="/">
-        <Menu.Item name='overview' active={activeItem === ''}>
+      <NavLink to="/" exact>
+        <Menu.Item name='overview'>
           Overview
         </Menu.Item>
-      </Link>
+      </NavLink>
 
-      <Link to="/applications">
-        <Menu.Item name='applications' active={activeItem === 'applications'}>
+      <NavLink to="/applications">
+        <Menu.Item name='applications'>
           Applications
         </Menu.Item>
-      </Link>
+      </NavLink>
 
-      <Link to="/networks">
-        <Menu.Item name='networks' active={activeItem === 'networks'}>
+      <NavLink to="/networks">
+        <Menu.Item name='networks'>
           Networks
         </Menu.Item>
-      </Link>
+      </NavLink>
 
-      <Link to="/storage">
-        <Menu.Item name='storage' active={activeItem === 'storage'}>
+      <NavLink to="/storage">
+        <Menu.Item name='storage'>
           Storage
         </Menu.Item>
-      </Link>
+      </NavLink>
 
-      <Link to="/nodes">
-        <Menu.Item name='nodes' active={activeItem === 'nodes'}>
+      <NavLink to="/nodes">
+        <Menu.Item name='nodes'>
           Nodes
         </Menu.Item>
-      </Link>
+      </NavLink>
     </Sidebar>
     )
   }

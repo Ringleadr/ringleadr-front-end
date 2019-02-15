@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Grid} from "semantic-ui-react";
 import ApplicationPage from "../applications/ApplicationPage";
-import { BrowserRouter as Router, Route} from "react-router-dom";
+import {HashRouter, Route} from "react-router-dom";
 import SideNav from "../side-nav/side-nav";
 import NetworkPage from "../networks/NetworkPage";
 import StoragePage from "../storage/StoragePage";
@@ -12,7 +12,7 @@ import New from "../new/New";
 class Home extends Component {
   render() {
     return (
-      <Router>
+      <HashRouter>
       <Grid>
         <Grid.Column width={2}>
         <SideNav/>
@@ -26,7 +26,7 @@ class Home extends Component {
           <Route path="/new" component={New}/>
         </Grid.Column>
       </Grid>
-      </Router>
+      </HashRouter>
     );
   }
 }

@@ -5,6 +5,7 @@ import "../new.css";
 import api from "../../../api/api";
 import ComponentForm from "./ComponentForm";
 import {addValidationRule} from "formsy-react";
+import {Redirect} from "react-router-dom";
 
 const errorLabel = <Label color="red" pointing/>;
 
@@ -24,7 +25,7 @@ class NewApp extends Component {
     this.state = {
       name: '', copies: '', node: '', networks: [], networkResults: [], components: [{
         name: '', image: '', replicas: '', scale_threshold: '', scale_min: '', scale_max: '', env: [], ports: [], storage: []
-      }]
+      }], redirect: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -102,7 +103,7 @@ class NewApp extends Component {
     console.log(application);
     api.createApp(application).then((resp) => {
       if (resp.ok) {
-        window.location = "/applications";
+        this.setState({redirect: true})
       } else {
         this.setState({createError: true, errorMsg: resp.msg})
       }
@@ -251,6 +252,7 @@ class NewApp extends Component {
 
     return (
       <React.Fragment>
+        {this.state.redirect && <Redirect to={"/applications"}/>}
         <Message error hidden={!this.state.createError}><strong>Error response from server: </strong>{this.state.errorMsg}</Message>
         <Form className={'new-form'} onValidSubmit={this.handleSubmit}>
           <Form.Field width={6} required>

@@ -8,6 +8,7 @@ import api from "../../../api/api";
 import ApplicationNode from "./ApplicationNode";
 import ApplicationMessages from "./ApplicationMessages";
 import ComponentGraphWrapper from "../component-info/ComponentGraphWrapper";
+import {Redirect} from "react-router-dom";
 
 class InfoDisplay extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class InfoDisplay extends Component {
       showFailure: false,
       failureMessage: '',
       validJSON: true,
+      redirect: false,
     };
     try {
       JSON.parse(JSON.stringify(this.removeAppName(this.props.app), null, 4))
@@ -52,8 +54,8 @@ class InfoDisplay extends Component {
     api.deleteApp(this.props.app.name).then(success => {
       if (success) {
         this.setState({showSuccess: true});
-        setTimeout(function() {
-          window.location = "/applications";
+        setTimeout(() => {
+          this.setState({redirect: true});
         }, 1500)
       } else {
         this.setState({showFailure: true});
@@ -70,8 +72,8 @@ class InfoDisplay extends Component {
       api.updateApp(JSON.stringify(updatedApp)).then(resp => {
         if (resp.ok) {
           this.setState({showSuccess: true});
-          setTimeout(function() {
-            window.location = `/applications`;
+          setTimeout(() => {
+            this.setState({redirect: true});
           }, 1500)
         } else {
           this.setState({showFailure: true, failureMessage: resp.msg});
@@ -83,6 +85,7 @@ class InfoDisplay extends Component {
   render() {
     return (
       <React.Fragment>
+        {this.state.redirect && <Redirect to={"/applications"} />}
         <Message positive size='big' floating hidden={!this.state.showSuccess}>
           <b>Success</b>
         </Message>

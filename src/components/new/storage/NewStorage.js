@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Button, Form, Header, Input, Message} from 'semantic-ui-react';
 import api from "../../../api/api";
+import {Redirect} from "react-router-dom";
 
 class NewStorage extends Component {
   state = {
@@ -8,6 +9,7 @@ class NewStorage extends Component {
     showSuccess: false,
     showFailure: false,
     failureMessage: '',
+    redirect: false,
   };
 
   constructor(props) {
@@ -33,7 +35,7 @@ class NewStorage extends Component {
     api.createStorage(this.state.value).then(resp => {
       if (resp.ok) {
         this.setState({showSuccess: true});
-        setTimeout(() => window.location = "/storage", 1500);
+        setTimeout(() => this.setState({redirect: true}), 1500);
       } else {
         this.setState({showFailure: true, failureMessage: resp.msg});
       }
@@ -43,6 +45,7 @@ class NewStorage extends Component {
   render() {
     return (
       <React.Fragment>
+        {this.state.redirect && <Redirect to={"/storage"}/>}
         <Header as={'h1'}>Storage</Header>
         <Form onSubmit={this.handleSubmit}>
           <Form.Field required width={4}>

@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, Icon, Message} from "semantic-ui-react";
 import api from "../../../api/api";
+import {Redirect} from "react-router-dom";
 
 class AppFromFile extends React.Component {
   state = {
@@ -8,6 +9,7 @@ class AppFromFile extends React.Component {
     showError: false,
     showSuccess: false,
     errorMessage: '',
+    redirect: false,
   };
   constructor(props) {
     super(props);
@@ -22,36 +24,36 @@ class AppFromFile extends React.Component {
     if (!this.state.selectedFile) {
       this.setState({showError: true, errorMessage: 'Please select a file before trying to upload'})
     } else {
-      console.log('can upload')
+      let fr = new FileReader();
+      fr.onload = () => {
+        let appString = fr.result;
+        try {
+          let app = JSON.parse(appString);
+          api.createApp(app).then(resp => {
+            if (resp.ok) {
+              this.setState({showSuccess: true});
+              setTimeout(() => {
+                this.setState({redirect: true})
+              }, 1500)
+            } else {
+              this.setState({showError: true, errorMessage: 'error creating application: ' + resp.msg});
+            }
+          })
+        } catch (e) {
+          this.setState({showError: true, errorMessage: 'Error parsing file contents: ' + e})
+        }
+      };
+      fr.onerror = () => {
+        this.setState({showError: true, errorMessage: 'Could not read uploaded file'})
+      };
+      fr.readAsText(this.state.selectedFile);
     }
-    let fr = new FileReader();
-    fr.onload = () => {
-      let appString = fr.result;
-      try {
-        let app = JSON.parse(appString);
-        api.createApp(app).then(resp => {
-          if (resp.ok) {
-            this.setState({showSuccess: true});
-            setTimeout(function() {
-              window.location = `/applications`;
-            }, 1500)
-          } else {
-            this.setState({showError: true, errorMessage: 'error creating application: '+resp.msg});
-          }
-        })
-      } catch (e) {
-        this.setState({showError: true, errorMessage: 'Error parsing file contents: '+e})
-      }
-    };
-    fr.onerror = () => {
-      this.setState({showError: true, errorMessage: 'Could not read uploaded file'})
-    };
-    fr.readAsText(this.state.selectedFile);
   }
 
   render() {
     return (
       <div className={'file-form'}>
+        {this.state.redirect && <Redirect to={"/applications"} />}
         <Message positive hidden={!this.state.showSuccess}>Success</Message>
         <Message negative hidden={!this.state.showError}>{this.state.errorMessage}</Message>
         <Button size={"large"} icon labelPosition={"left"} onClick={() => document.getElementById('upload').click()}>

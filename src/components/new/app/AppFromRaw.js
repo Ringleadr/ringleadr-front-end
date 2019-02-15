@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, Form, Icon, Message, TextArea} from "semantic-ui-react";
 import api from "../../../api/api";
+import {Redirect} from "react-router-dom";
 
 class AppFromRaw extends React.Component {
   constructor(props) {
@@ -52,8 +53,8 @@ class AppFromRaw extends React.Component {
       api.createApp(JSON.parse(this.state.areaValue)).then(resp => {
         if (resp.ok) {
           this.setState({showSuccess: true});
-          setTimeout(function() {
-            window.location = `/applications`;
+          setTimeout(() => {
+            this.setState({redirect: true})
           }, 1500)
         } else {
           this.setState({showFailure: true, errorMessage: resp.msg});
@@ -65,6 +66,7 @@ class AppFromRaw extends React.Component {
   render() {
     return (
       <React.Fragment>
+        {this.state.redirect && <Redirect to={"/applications"}/>}
         <Message size={'big'} positive floating hidden={!this.state.showSuccess}>
           Success
         </Message>
