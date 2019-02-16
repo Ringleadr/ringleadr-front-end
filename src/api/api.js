@@ -88,6 +88,11 @@ const API = {
   async getOverview() {
     const response = await fetch('http://localhost:14440/overview');
     return await response.json();
+  },
+
+  async getNodeStats(name) {
+    const response = await fetch(`http://localhost:14440/node/${name}/stats`);
+    return await response.json();
   }
 };
 
