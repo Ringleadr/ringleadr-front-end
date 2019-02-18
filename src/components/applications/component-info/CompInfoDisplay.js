@@ -22,7 +22,7 @@ class CompInfoDisplay extends Component {
         <Header as="h2">
           {this.props.comp.name}
         </Header>
-        <ComponentGraph comp={this.props.comp}/>
+        {this.props.comp.cpu_usage && <ComponentGraph comp={this.props.comp}/>}
         <Button onClick={this.handleClick}>Toggle Raw View</Button>
         {this.state.show && <Form>
           <TextArea className='code-area'

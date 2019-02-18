@@ -28,7 +28,7 @@ class ComponentGraphWrapper extends Component {
         {this.state.showGraph ?
           <React.Fragment>
             <h3 className={'comp-name'}>{this.props.compName}</h3>
-            <CompInfoDisplay comp={this.state.comp}/>
+            {this.state.comp && <CompInfoDisplay comp={this.state.comp}/>}
           </React.Fragment>
         : ''}
       </React.Fragment>
