@@ -11,7 +11,16 @@ const API = {
 
   async deleteApp(name) {
     const response = await fetch(`http://localhost:14440/applications/${name}`, {method: 'delete'});
-    return response.ok;
+    let ok = response.ok;
+    let respBody = await response.text();
+    return {ok: ok, msg: respBody};
+  },
+
+  async deleteAllApps() {
+    const response = await fetch(`http://localhost:14440/all/applications`, {method: 'delete'});
+    let ok = response.ok;
+    let respBody = await response.text();
+    return {ok: ok, msg: respBody};
   },
 
   async updateApp(body) {
@@ -48,6 +57,13 @@ const API = {
     return {ok: ok, msg: body};
   },
 
+  async deleteAllNetworks() {
+    const response = await fetch(`http://localhost:14440/all/networks`, {method: 'delete'});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
+  },
+
   async getCompInfo(appName, compName) {
     const response = await fetch(`http://localhost:14440/application/${appName}/${compName}`);
     return await response.json();
@@ -73,6 +89,13 @@ const API = {
     return {ok: ok, msg: body};
   },
 
+  async deleteAllStorage() {
+    const response = await fetch(`http://localhost:14440/all/storage`, {method: 'delete'});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
+  },
+
   async getNodes() {
     const response = await fetch('http://localhost:14440/nodes');
     return await response.json();
@@ -93,6 +116,13 @@ const API = {
   async getNodeStats(name) {
     const response = await fetch(`http://localhost:14440/node/${name}/stats`);
     return await response.json();
+  },
+
+  async purge() {
+    const response = await fetch(`http://localhost:14440/everything`, {method: 'delete'});
+    let ok = response.ok;
+    let body = await response.text();
+    return {ok: ok, msg: body};
   }
 };
 

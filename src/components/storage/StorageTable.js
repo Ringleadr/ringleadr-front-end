@@ -12,6 +12,13 @@ class StorageTable extends Component {
     failureMessage: '',
   };
 
+  constructor(props) {
+    super(props);
+    this.deleteStorage = this.deleteStorage.bind(this);
+    this.deleteAll = this.deleteAll.bind(this);
+  }
+
+
   componentDidMount() {
     document.title = "Agogos - Storage";
     api.getStorage().then(storage => {
@@ -34,10 +41,21 @@ class StorageTable extends Component {
     });
   }
 
+  deleteAll() {
+    api.deleteAllStorage().then(resp => {
+      if (resp.ok) {
+        this.setState({showSuccess: true});
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        this.setState({showFailure: true, failureMessage: resp.msg});
+      }
+    })
+  }
+
   render() {
     return (
       <React.Fragment>
-        <Message positive hidden={!this.state.showSuccess}>Storage successfully deleted</Message>
+        <Message positive hidden={!this.state.showSuccess}>Success</Message>
         <Message error hidden={!this.state.showFailure}>
           <Message.Header>Something went wrong</Message.Header>
           {this.state.failureMessage}
@@ -65,6 +83,7 @@ class StorageTable extends Component {
           </Table.Body>
         </Table>}
         <Link to={"/new/storage"}><Button positive>New Storage</Button></Link>
+        <Button negative onClick={this.deleteAll} disabled={this.state.storage.length === 0} >Delete all Storage</Button>
       </React.Fragment>
     );
   }

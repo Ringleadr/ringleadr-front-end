@@ -51,15 +51,14 @@ class InfoDisplay extends Component {
   }
 
   handleDelete() {
-    api.deleteApp(this.props.app.name).then(success => {
-      if (success) {
+    api.deleteApp(this.props.app.name).then(resp => {
+      if (resp.ok) {
         this.setState({showSuccess: true});
         setTimeout(() => {
           this.setState({redirect: true});
         }, 1500)
       } else {
-        this.setState({showFailure: true});
-        //Don't redirect... but maybe do something?
+        this.setState({showFailure: true, failureMessage: resp.msg});
       }
     })
   }

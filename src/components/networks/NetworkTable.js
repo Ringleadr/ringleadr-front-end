@@ -23,6 +23,12 @@ class NetworkTable extends Component {
     })
   }
 
+  constructor(props) {
+    super(props);
+    this.deleteNetwork = this.deleteNetwork.bind(this);
+    this.deleteAll = this.deleteAll.bind(this);
+  }
+
   deleteNetwork(name) {
     api.deleteNetwork(name).then((resp) => {
       if (resp.ok) {
@@ -34,10 +40,21 @@ class NetworkTable extends Component {
     });
   }
 
+  deleteAll() {
+    api.deleteAllNetworks().then(resp => {
+      if (resp.ok) {
+        this.setState({showSuccess: true});
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        this.setState({showFailure: true, failureMessage: resp.msg});
+      }
+    })
+  }
+
   render() {
     return (
       <React.Fragment>
-        <Message positive hidden={!this.state.showSuccess}>Network successfully deleted</Message>
+        <Message positive hidden={!this.state.showSuccess}>Success</Message>
         <Message error hidden={!this.state.showFailure}>
           <Message.Header>Something went wrong</Message.Header>
           {this.state.failureMessage}
@@ -65,6 +82,7 @@ class NetworkTable extends Component {
           </Table.Body>
         </Table>}
         <Link to={"/new/network"}><Button positive>New Network</Button></Link>
+        <Button negative onClick={this.deleteAll} disabled={this.state.networks.length === 0} >Delete all Networks</Button>
 
       </React.Fragment>
     );
