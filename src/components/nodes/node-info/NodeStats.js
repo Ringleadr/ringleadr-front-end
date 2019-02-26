@@ -32,7 +32,7 @@ class NodeStats extends React.Component {
 
           <Statistic>
             <Statistic.Value>{this.props.stats.stats[this.props.stats.stats.length - 1].num_containers}</Statistic.Value>
-            <Statistic.Label>Running Container{this.props.stats.stats[this.props.stats.stats.length - 1].num_containers !== 1 ? 's' : ''}</Statistic.Label>
+            <Statistic.Label>Running Agogos Container{this.props.stats.stats[this.props.stats.stats.length - 1].num_containers !== 1 ? 's' : ''}</Statistic.Label>
           </Statistic>
         </div>
         </Container>

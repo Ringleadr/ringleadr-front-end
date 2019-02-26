@@ -88,10 +88,10 @@ class OverviewPage extends React.Component {
             </Message.Header>
             {this.state.failureMessage}
           </Message>
-          <Button icon negative size={"huge"} labelPosition={"left"} onClick={() => this.setState({showModal: true})}>
+          {this.state.loaded && <Button icon negative size={"huge"} labelPosition={"left"} onClick={() => this.setState({showModal: true})}>
             <Icon name={'warning sign'}/>
             Purge all resources
-          </Button>
+          </Button>}
         </Container>
       </React.Fragment>
     )
