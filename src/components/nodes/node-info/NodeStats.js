@@ -1,12 +1,33 @@
 import React from "react";
-import {Container, Header, Statistic} from "semantic-ui-react";
+import {Container, Header, Message, Statistic} from "semantic-ui-react";
 import CpuGraph from "./CpuGraph";
 import MemoryGraph from "./MemoryGraph";
 
 class NodeStats extends React.Component {
   componentDidMount() {
-    console.log(this.props.stats);
+    // console.log(this.props.stats);
   }
+
+  timeSince = function(unixTime) {
+    var timeStamp = new Date(unixTime * 1000);
+    var now = new Date(),
+      secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+    if(secondsPast < 60){
+      return parseInt(secondsPast) + ' seconds ago';
+    }
+    if(secondsPast < 3600){
+      return parseInt(secondsPast/60) + ' minutes ago';
+    }
+    if(secondsPast <= 86400){
+      return parseInt(secondsPast/3600) + ' hours ago';
+    }
+    if(secondsPast > 86400){
+      let day = timeStamp.getDate();
+      let month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ","");
+      let year = timeStamp.getFullYear() === now.getFullYear() ? "" :  " "+timeStamp.getFullYear();
+      return day + " " + month + year;
+    }
+  };
 
   sizeOf = function (bytes) {
     if (bytes === 0) { return "0.00 B"; }
@@ -36,6 +57,17 @@ class NodeStats extends React.Component {
           </Statistic>
         </div>
         </Container>
+
+        <p>Last recorded: {this.timeSince(this.props.stats.stats[this.props.stats.stats.length - 1].timestamp)}</p>
+        {this.props.stats.stats[this.props.stats.stats.length - 1].unavailable.length > 0 &&
+        <Message
+          warning
+          icon={'warning circle'}
+          header={'The following stats are unavailable'}
+          size={'large'}
+          content={this.props.stats.stats[this.props.stats.stats.length - 1].unavailable.join(", ")}
+        />
+        }
 
         <Header as={'h3'}>Graphs</Header>
         <CpuGraph stats={this.props.stats.stats} />
