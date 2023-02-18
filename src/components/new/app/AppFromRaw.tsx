@@ -1,7 +1,7 @@
 import React from "react";
-import {Button, Form, Icon, Message, TextArea} from "semantic-ui-react";
+import { Button, Form, Icon, Message, TextArea } from "semantic-ui-react";
 import api from "../../../api/api";
-import {Redirect} from "react-router-dom";
+import { redirect } from "react-router-dom";
 
 class AppFromRaw extends React.Component {
   constructor(props) {
@@ -42,9 +42,9 @@ class AppFromRaw extends React.Component {
   handleOnChange(e) {
     try {
       JSON.parse(e.target.value);
-      this.setState({areaValue: e.target.value, validJSON: true});
+      this.setState({ areaValue: e.target.value, validJSON: true });
     } catch (err) {
-      this.setState({areaValue: e.target.value, validJSON: false});
+      this.setState({ areaValue: e.target.value, validJSON: false });
     }
   }
 
@@ -52,12 +52,12 @@ class AppFromRaw extends React.Component {
     if (this.state.validJSON) {
       api.createApp(JSON.parse(this.state.areaValue)).then(resp => {
         if (resp.ok) {
-          this.setState({showSuccess: true});
+          this.setState({ showSuccess: true });
           setTimeout(() => {
-            this.setState({redirect: true})
+            this.setState({ redirect: true })
           }, 1500)
         } else {
-          this.setState({showFailure: true, errorMessage: resp.msg});
+          this.setState({ showFailure: true, errorMessage: resp.msg });
         }
       })
     }
@@ -66,7 +66,7 @@ class AppFromRaw extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {this.state.redirect && <Redirect to={"/applications"}/>}
+        {this.state.redirect && <Redirect to={"/applications"} />}
         <Message size={'big'} positive floating hidden={!this.state.showSuccess}>
           Success
         </Message>
@@ -75,7 +75,7 @@ class AppFromRaw extends React.Component {
           {this.state.errorMessage}
         </Message>
         <Form>
-          <TextArea className='code-area' autoHeight value={this.state.areaValue} onChange={this.handleOnChange}/>
+          <TextArea className='code-area' autoHeight value={this.state.areaValue} onChange={this.handleOnChange} />
           {!this.state.validJSON && <Message visible error>
             <Icon name='attention' />
             Invalid JSON

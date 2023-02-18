@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {Table} from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import "./InfoDisplay.css"
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 class ApplicationComponents extends Component {
   render() {

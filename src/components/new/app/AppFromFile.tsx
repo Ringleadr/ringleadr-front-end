@@ -1,7 +1,7 @@
 import React from "react";
-import {Button, Icon, Message} from "semantic-ui-react";
+import { Button, Icon, Message } from "semantic-ui-react";
 import api from "../../../api/api";
-import {Redirect} from "react-router-dom";
+import { redirect } from "react-router-dom";
 
 class AppFromFile extends React.Component {
   state = {
@@ -17,12 +17,12 @@ class AppFromFile extends React.Component {
   };
 
   handleFileSelect(file) {
-    this.setState({selectedFile: file})
+    this.setState({ selectedFile: file })
   }
 
   handleUpload() {
     if (!this.state.selectedFile) {
-      this.setState({showError: true, errorMessage: 'Please select a file before trying to upload'})
+      this.setState({ showError: true, errorMessage: 'Please select a file before trying to upload' })
     } else {
       let fr = new FileReader();
       fr.onload = () => {
@@ -31,20 +31,20 @@ class AppFromFile extends React.Component {
           let app = JSON.parse(appString);
           api.createApp(app).then(resp => {
             if (resp.ok) {
-              this.setState({showSuccess: true});
+              this.setState({ showSuccess: true });
               setTimeout(() => {
-                this.setState({redirect: true})
+                this.setState({ redirect: true })
               }, 1500)
             } else {
-              this.setState({showError: true, errorMessage: 'error creating application: ' + resp.msg});
+              this.setState({ showError: true, errorMessage: 'error creating application: ' + resp.msg });
             }
           })
         } catch (e) {
-          this.setState({showError: true, errorMessage: 'Error parsing file contents: ' + e})
+          this.setState({ showError: true, errorMessage: 'Error parsing file contents: ' + e })
         }
       };
       fr.onerror = () => {
-        this.setState({showError: true, errorMessage: 'Could not read uploaded file'})
+        this.setState({ showError: true, errorMessage: 'Could not read uploaded file' })
       };
       fr.readAsText(this.state.selectedFile);
     }
@@ -57,10 +57,10 @@ class AppFromFile extends React.Component {
         <Message positive hidden={!this.state.showSuccess}>Success</Message>
         <Message negative hidden={!this.state.showError}>{this.state.errorMessage}</Message>
         <Button size={"large"} icon labelPosition={"left"} onClick={() => document.getElementById('upload').click()}>
-          <Icon name={'upload'}/>
+          <Icon name={'upload'} />
           Select file to upload
         </Button>
-        <input hidden id="upload" type="file" onChange={(e) => this.handleFileSelect(e.target.files[0])}/>
+        <input hidden id="upload" type="file" onChange={(e) => this.handleFileSelect(e.target.files[0])} />
         {this.state.selectedFile && <p><b>Selected:</b> {this.state.selectedFile.name}</p>}
         <Button positive size={"large"} onClick={this.handleUpload}>Upload</Button>
       </div>

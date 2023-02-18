@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {Button, Form, Header, Input, Message} from 'semantic-ui-react';
+import { Button, Form, Header, Input, Message } from 'semantic-ui-react';
 import api from "../../../api/api";
-import {Redirect} from "react-router-dom";
+import { redirect } from "react-router-dom";
 
-class NewNetwork extends Component {
+class NewStorage extends Component {
   state = {
     value: '',
     showSuccess: false,
@@ -19,25 +19,25 @@ class NewNetwork extends Component {
   }
 
   componentDidMount() {
-    document.title = "Agogos - New Network"
+    document.title = "Agogos - New Storage"
   }
 
   handleOnChange(e) {
-    this.setState({value: e.target.value})
+    this.setState({ value: e.target.value })
   }
 
   handleSubmit() {
-    this.setState({showSuccess: false, showFailure: false});
+    this.setState({ showSuccess: false, showFailure: false });
     if (this.state.value === '') {
-      this.setState({showFailure: true, failureMessage: 'Network name cannot be empty'});
+      this.setState({ showFailure: true, failureMessage: 'Storage name cannot be empty' });
       return
     }
-    api.createNetwork(this.state.value).then(resp => {
+    api.createStorage(this.state.value).then(resp => {
       if (resp.ok) {
-        this.setState({showSuccess: true});
-        setTimeout(() => this.setState({redirect: true}), 1500);
+        this.setState({ showSuccess: true });
+        setTimeout(() => this.setState({ redirect: true }), 1500);
       } else {
-        this.setState({showFailure: true, failureMessage: resp.msg});
+        this.setState({ showFailure: true, failureMessage: resp.msg });
       }
     })
   }
@@ -45,18 +45,18 @@ class NewNetwork extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.state.redirect && <Redirect to={"/networks"}/>}
-        <Header as={'h1'}>Network</Header>
+        {this.state.redirect && <Redirect to={"/storage"} />}
+        <Header as={'h1'}>Storage</Header>
         <Form onSubmit={this.handleSubmit}>
           <Form.Field required width={4}>
             <label>Name</label>
-            <Input value={this.state.value} onChange={this.handleOnChange} error={this.state.showFailure}/>
+            <Input value={this.state.value} onChange={this.handleOnChange} error={this.state.showFailure} />
           </Form.Field>
 
           <Button type='submit'>Submit</Button>
         </Form>
 
-        <Message positive hidden={!this.state.showSuccess}>Network successfully created</Message>
+        <Message positive hidden={!this.state.showSuccess}>Storage successfully created</Message>
         <Message error hidden={!this.state.showFailure}>
           <Message.Header>Something went wrong</Message.Header>
           {this.state.failureMessage}
@@ -66,4 +66,4 @@ class NewNetwork extends Component {
   }
 }
 
-export default NewNetwork;
+export default NewStorage;
