@@ -1,40 +1,43 @@
-import React, { Component } from 'react';
-import api from '../../../api/api';
-import {Breadcrumb, Loader} from "semantic-ui-react";
+import React, { Component, useState } from "react";
+import { Breadcrumb, Loader } from "semantic-ui-react";
 import InfoDisplay from "./InfoDisplay";
-import {Link} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { getApp } from "../../../api/api";
 
-class ApplicationInfo extends Component {
-  state = {
+function ApplicationInfo() {
+  const initialState = {
     loaded: false,
-    application: {}
+    application: {},
   };
+  let [state, setState] = useState(initialState);
+  let { name } = useParams();
 
-  componentDidMount() {
-    document.title = `Agogos - Applications - ${this.props.match.params.name}`;
-    api.getApp(this.props.match.params.name).then(app => {
+  !state.loaded &&
+    getApp(name!).then((app) => {
       if (app) {
-        this.setState({application: app, loaded: true});
+        setState({ application: app, loaded: true });
       } else {
-        this.setState({loaded: true})
+        setState({ application: {}, loaded: true });
       }
-    })
-  }
+    });
 
-  render() {
-    return (
-      <React.Fragment>
-        <Breadcrumb>
-          <Breadcrumb.Section><Link to='/applications'>Applications</Link></Breadcrumb.Section>
-          <Breadcrumb.Divider />
-          <Breadcrumb.Section active>{this.props.match.params.name}</Breadcrumb.Section>
-        </Breadcrumb>
-        {!this.state.loaded && <Loader active inline size='huge'>Loading {this.props.match.params.name}</Loader>}
-        {this.state.loaded &&
-        <InfoDisplay app={this.state.application}/>}
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <Breadcrumb>
+        <Breadcrumb.Section>
+          <Link to="/applications">Applications</Link>
+        </Breadcrumb.Section>
+        <Breadcrumb.Divider />
+        <Breadcrumb.Section active>{name}</Breadcrumb.Section>
+      </Breadcrumb>
+      {!state.loaded && (
+        <Loader active inline size="huge">
+          Loading {name}
+        </Loader>
+      )}
+      {state.loaded && <InfoDisplay app={state.application} />}
+    </React.Fragment>
+  );
 }
 
 export default ApplicationInfo;

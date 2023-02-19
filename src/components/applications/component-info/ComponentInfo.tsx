@@ -1,42 +1,47 @@
-import React, { Component } from 'react';
-import api from '../../../api/api';
-import {Breadcrumb, Loader} from "semantic-ui-react";
-import {Link} from "react-router-dom";
+import React, { Component, useState } from "react";
+import { Breadcrumb, Loader } from "semantic-ui-react";
+import { Link, useParams } from "react-router-dom";
 import CompInfoDisplay from "./CompInfoDisplay";
+import { getCompInfo } from "../../../api/api";
 
-class ComponentInfo extends Component {
-  state = {
+function ComponentInfo() {
+  const initialState = {
     loaded: false,
-    comp: {}
+    comp: {},
   };
+  let [state, setState] = useState(initialState);
+  let { name, compName } = useParams();
 
-  componentDidMount() {
-    document.title = `Agogos - Applications - ${this.props.match.params.name} - ${this.props.match.params.compName}`;
-    api.getCompInfo(this.props.match.params.name, this.props.match.params.compName).then(comp => {
+  !state.loaded &&
+    getCompInfo(name!, compName!).then((comp) => {
       if (comp) {
-        this.setState({comp: comp, loaded: true});
+        setState({ comp: comp, loaded: true });
       } else {
-        this.setState({loaded: true})
+        setState({ comp: {}, loaded: true });
       }
-    })
-  }
+    });
 
-  render() {
-    return (
-      <React.Fragment>
-        <Breadcrumb>
-          <Breadcrumb.Section><Link to='/applications'>Applications</Link></Breadcrumb.Section>
-          <Breadcrumb.Divider/>
-          <Breadcrumb.Section><Link to={`/applications/${this.props.match.params.name}`}>{this.props.match.params.name}</Link></Breadcrumb.Section>
-          <Breadcrumb.Divider/>
-          <Breadcrumb.Section active>{this.props.match.params.compName}</Breadcrumb.Section>
-        </Breadcrumb>
-        {!this.state.loaded && <Loader active inline size='huge'>Loading {this.props.match.params.compName}</Loader>}
-        {this.state.loaded &&
-        <CompInfoDisplay comp={this.state.comp}/>}
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <Breadcrumb>
+        <Breadcrumb.Section>
+          <Link to="/applications">Applications</Link>
+        </Breadcrumb.Section>
+        <Breadcrumb.Divider />
+        <Breadcrumb.Section>
+          <Link to={`/applications/${name}`}>{name}</Link>
+        </Breadcrumb.Section>
+        <Breadcrumb.Divider />
+        <Breadcrumb.Section active>{compName}</Breadcrumb.Section>
+      </Breadcrumb>
+      {!state.loaded && (
+        <Loader active inline size="huge">
+          Loading {compName}
+        </Loader>
+      )}
+      {state.loaded && <CompInfoDisplay comp={state.comp} />}
+    </React.Fragment>
+  );
 }
 
 export default ComponentInfo;
