@@ -1,3 +1,10 @@
+export interface Overview {
+  applications: number;
+  networks: number;
+  storage: number;
+  nodes: number;
+}
+
 export interface Application {
   name: string;
   copies: number;
